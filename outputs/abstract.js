@@ -14,8 +14,10 @@ export default class {
   async initialize() {
     try {
       this.options = this._defaultOptions;
-      this.onReady(this.options); 
+      console.log(this._defaultOptions);
+      console.log(this.options);
       this.setChannels(this.channels);
+      this.onReady(this.options); 
     } catch(error) {
       this.onFail(error)
     }

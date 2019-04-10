@@ -10,16 +10,15 @@ export default class ToneJSOutput extends AbstractOutput {
 
   async initialize() {
     try {
-      this.options = this._defaultOptions;
-      this.synth = new ToneJS.PolySynth().toMaster();
-      //this._updateSynthOptions();
-      this.onReady(this.options); 
+      this.options = {...this._defaulOptions};
+      this.synth = new ToneJS.PolySynth(this.options.polyphony, ToneJS.FMSynth).toMaster();
+      this._updateSynthOptions();
       this.setChannels(this.channels);
+      this.onReady(this.options); 
     } catch(error) {
       console.log(error);
       this.onFail(error)
     }
-    super.initialize();
   }
 
   noteOn(note,velocity) {
@@ -44,12 +43,20 @@ export default class ToneJSOutput extends AbstractOutput {
     this.synth.set({
       envelope: {
         attack: this.options.attack,
-        sustain: this.options.sustain,
         delay: this.options.delay,
+        sustain: this.options.sustain,
         release: this.options.release
       },
       oscillator: {
         type: this.options.oscillator
+      },
+      modulator: {
+        type: this.options.modulatorType
+      },modulationEnvelope  : {
+        attack  : this.options.modulationAttack,
+        decay  : this.options.modulationDecay ,
+        sustain  : this.options.modulationSustain ,
+        release  : this.options.modulationRelease
       }
     }); 
   }
@@ -62,6 +69,10 @@ export default class ToneJSOutput extends AbstractOutput {
       decay: 0.1,
       sustain: 0.3,
       release: 1,
+      modulatorType: 'square',
+      modulationAttack: 0.5,
+      modulationDecay: 0,
+      modulationRelease: 0.5
     }
   }
 
